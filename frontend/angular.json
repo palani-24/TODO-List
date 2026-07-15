@@ -6,7 +6,10 @@
     "cttms-frontend": {
       "projectType": "application",
       "schematics": {
-        "@schematics/angular:component": { "standalone": true, "style": "scss" }
+        "@schematics/angular:component": {
+          "standalone": true,
+          "style": "scss"
+        }
       },
       "root": "",
       "sourceRoot": "src",
@@ -18,20 +21,42 @@
             "outputPath": "dist/cttms-frontend",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": ["zone.js"],
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "tsconfig.app.json",
-            "assets": ["src/assets"],
-            "styles": ["src/styles.scss", "node_modules/bootstrap/dist/css/bootstrap.min.css"],
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "src/assets"
+              }
+            ],
+            "styles": [
+              "src/styles.scss",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
+            ],
             "scripts": []
           },
           "configurations": {
             "production": {
               "budgets": [
-                { "type": "initial", "maximumWarning": "1mb", "maximumError": "2mb" }
+                {
+                  "type": "initial",
+                  "maximumWarning": "1mb",
+                  "maximumError": "2mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
               ],
               "outputHashing": "all",
               "fileReplacements": [
-                { "replace": "src/environments/environment.ts", "with": "src/environments/environment.prod.ts" }
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
               ]
             },
             "development": {
@@ -45,8 +70,12 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
-            "production": { "buildTarget": "cttms-frontend:build:production" },
-            "development": { "buildTarget": "cttms-frontend:build:development" }
+            "production": {
+              "buildTarget": "cttms-frontend:build:production"
+            },
+            "development": {
+              "buildTarget": "cttms-frontend:build:development"
+            }
           },
           "defaultConfiguration": "development"
         }
@@ -54,6 +83,6 @@
     }
   },
   "cli": {
-    "analytics": "db3f5ddb-a8fa-427e-9ec5-153bb5990b99"
+    "analytics": false
   }
 }
