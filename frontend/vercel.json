@@ -1,8 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "angular",
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist/cttms-frontend",
+  "outputDirectory": "dist/cttms-frontend/browser",
   "rewrites": [
     {
       "source": "/(.*)",
