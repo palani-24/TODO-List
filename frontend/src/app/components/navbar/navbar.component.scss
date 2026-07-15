@@ -1,0 +1,141 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh;
+  background: linear-gradient(180deg, #0B6E4F 0%, #073d2b 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  transition: transform 0.25s ease;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 22px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+
+  .brand-icon {
+    font-size: 28px;
+  }
+
+  h2 {
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+
+  span {
+    font-size: 11px;
+    opacity: 0.8;
+  }
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 12px;
+  gap: 4px;
+  flex: 1;
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background 0.2s ease;
+
+    i {
+      width: 18px;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    &.active {
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+    }
+  }
+}
+
+.sidebar-illustration {
+  padding: 20px;
+  text-align: center;
+  font-size: 64px;
+  opacity: 0.15;
+}
+
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 260px;
+  right: 0;
+  height: 64px;
+  background: #fff;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  z-index: 900;
+  gap: 16px;
+}
+
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.topbar-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #212529;
+  margin: 0;
+  flex: 1;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  i.fa-bell {
+    font-size: 18px;
+    color: #495057;
+  }
+
+  .coach-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #212529;
+  }
+}
+
+@media (max-width: 992px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  body.sidebar-collapsed .sidebar {
+    transform: translateX(0);
+  }
+  .topbar {
+    left: 0;
+  }
+  .hamburger {
+    display: block;
+  }
+}

@@ -1,0 +1,72 @@
+<div class="page-content">
+  <div class="panel form-panel">
+    <div class="panel-header">
+      <h3><i class="fa-solid fa-pen"></i> Edit Task</h3>
+      <a routerLink="/tasks" class="btn-outline"><i class="fa-solid fa-arrow-left"></i> Back</a>
+    </div>
+
+    <div *ngIf="loading" class="spinner-wrap">
+      <div class="spinner"></div>
+    </div>
+
+    <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="onSubmit()" class="task-form">
+      <div class="form-row">
+        <label>Task Name</label>
+        <input type="text" formControlName="taskName" />
+        <small class="error" *ngIf="f['taskName'].touched && f['taskName'].invalid">
+          Task name is required (min 3 characters).
+        </small>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Category</label>
+          <select formControlName="category">
+            <option *ngFor="let c of categoryOptions" [value]="c">{{ c }}</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>Assigned To</label>
+          <select formControlName="assignedTo">
+            <option *ngFor="let a of assignedToOptions" [value]="a">{{ a }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Priority</label>
+          <select formControlName="priority">
+            <option *ngFor="let p of priorityOptions" [value]="p">{{ p }}</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>Practice Date</label>
+          <input type="date" formControlName="practiceDate" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Status</label>
+        <select formControlName="status">
+          <option value="Pending">Pending</option>
+          <option value="Completed">Completed</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label>Description</label>
+        <textarea formControlName="description" rows="4"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <a routerLink="/tasks" class="btn-outline">Cancel</a>
+        <button type="submit" class="btn-primary" [disabled]="submitting">
+          <i class="fa-solid fa-check"></i> {{ submitting ? 'Saving...' : 'Update Task' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

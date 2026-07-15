@@ -1,0 +1,46 @@
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <i class="fa-solid fa-person-running brand-icon"></i>
+    <div>
+      <h2>CTTMS</h2>
+      <span>Cricket Team Task Management System</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+      <i class="fa-solid fa-table-columns"></i> Dashboard
+    </a>
+    <a routerLink="/tasks" routerLinkActive="active" class="nav-item">
+      <i class="fa-solid fa-clipboard-list"></i> Team Tasks
+    </a>
+    <a routerLink="/tasks/add" routerLinkActive="active" class="nav-item">
+      <i class="fa-solid fa-plus"></i> Add Task
+    </a>
+    <a routerLink="/completed" routerLinkActive="active" class="nav-item">
+      <i class="fa-solid fa-circle-check"></i> Completed Tasks
+    </a>
+    <a routerLink="/reports" routerLinkActive="active" class="nav-item">
+      <i class="fa-solid fa-chart-simple"></i> Reports
+    </a>
+  </nav>
+
+  <div class="sidebar-illustration">
+    <i class="fa-solid fa-baseball-bat-ball"></i>
+  </div>
+</aside>
+
+<header class="topbar">
+  <button class="hamburger" (click)="toggleSidebar()">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+  <h1 class="topbar-title">Cricket Team Task Management System</h1>
+  <div class="topbar-right">
+    <i class="fa-regular fa-bell"></i>
+    <div class="coach-badge">
+      <i class="fa-solid fa-user-tie"></i>
+      <span>Coach</span>
+      <i class="fa-solid fa-chevron-down"></i>
+    </div>
+  </div>
+</header>

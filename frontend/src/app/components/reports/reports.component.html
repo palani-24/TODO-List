@@ -1,0 +1,38 @@
+<div class="page-content">
+  <div class="panel">
+    <div class="panel-header">
+      <h3><i class="fa-solid fa-chart-simple"></i> Reports</h3>
+    </div>
+
+    <div *ngIf="loading" class="spinner-wrap"><div class="spinner"></div></div>
+
+    <div *ngIf="!loading">
+      <div class="report-summary">
+        <div class="report-stat">
+          <h2>{{ completionRate }}%</h2>
+          <p>Overall Completion Rate</p>
+        </div>
+        <div class="report-stat">
+          <h2>{{ tasks.length }}</h2>
+          <p>Total Tasks Tracked</p>
+        </div>
+      </div>
+
+      <h4 class="breakdown-title">Tasks by Category</h4>
+      <div class="breakdown-list" *ngIf="breakdown.length > 0">
+        <div class="breakdown-row" *ngFor="let item of breakdown">
+          <span class="breakdown-label">{{ item.category }}</span>
+          <div class="breakdown-bar">
+            <div class="breakdown-fill" [style.width.%]="item.percentage"></div>
+          </div>
+          <span class="breakdown-count">{{ item.count }} ({{ item.percentage }}%)</span>
+        </div>
+      </div>
+
+      <div *ngIf="breakdown.length === 0" class="empty-state">
+        <i class="fa-solid fa-chart-simple"></i>
+        <p>No data to report yet.</p>
+      </div>
+    </div>
+  </div>
+</div>

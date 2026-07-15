@@ -1,0 +1,51 @@
+.toast-container {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border-left: 4px solid #0B6E4F;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  padding: 12px 16px;
+  min-width: 260px;
+  font-size: 13px;
+  color: #212529;
+  animation: slideIn 0.25s ease;
+
+  i:first-child {
+    color: #0B6E4F;
+  }
+
+  &.error {
+    border-left-color: #e03131;
+    i:first-child { color: #e03131; }
+  }
+  &.info {
+    border-left-color: #1971c2;
+    i:first-child { color: #1971c2; }
+  }
+
+  span { flex: 1; }
+
+  button {
+    background: none;
+    border: none;
+    color: #adb5bd;
+    cursor: pointer;
+  }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(30px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}

@@ -1,0 +1,84 @@
+<div class="page-content">
+  <div class="panel">
+    <div class="panel-header">
+      <h3>Team Tasks</h3>
+      <a routerLink="/tasks/add" class="btn-primary"><i class="fa-solid fa-plus"></i> Add Task</a>
+    </div>
+
+    <div class="filters-bar">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input
+          type="text"
+          placeholder="Search tasks..."
+          [(ngModel)]="filters.search"
+          (ngModelChange)="onSearchChange()"
+        />
+      </div>
+
+      <select [(ngModel)]="filters.category" (ngModelChange)="fetchTasks()">
+        <option value="">All Categories</option>
+        <option *ngFor="let c of categoryOptions" [value]="c">{{ c }}</option>
+      </select>
+
+      <select [(ngModel)]="filters.assignedTo" (ngModelChange)="fetchTasks()">
+        <option value="">All Players</option>
+        <option *ngFor="let a of assignedToOptions" [value]="a">{{ a }}</option>
+      </select>
+
+      <select [(ngModel)]="filters.priority" (ngModelChange)="fetchTasks()">
+        <option value="">All Priorities</option>
+        <option *ngFor="let p of priorityOptions" [value]="p">{{ p }}</option>
+      </select>
+
+      <select [(ngModel)]="filters.status" (ngModelChange)="fetchTasks()">
+        <option value="">All Status</option>
+        <option value="Pending">Pending</option>
+        <option value="Completed">Completed</option>
+      </select>
+
+      <select [(ngModel)]="filters.sort" (ngModelChange)="fetchTasks()">
+        <option value="date_asc">Date ↑</option>
+        <option value="date_desc">Date ↓</option>
+        <option value="newest">Newest First</option>
+      </select>
+
+      <button class="btn-outline" (click)="clearFilters()">
+        <i class="fa-solid fa-rotate"></i> Clear
+      </button>
+    </div>
+
+    <div *ngIf="loading" class="spinner-wrap">
+      <div class="spinner"></div>
+    </div>
+
+    <div *ngIf="!loading && tasks.length === 0" class="empty-state">
+      <i class="fa-solid fa-clipboard-list"></i>
+      <p>No tasks match your filters.</p>
+    </div>
+
+    <div class="task-grid" *ngIf="!loading && tasks.length > 0">
+      <app-task-card
+        *ngFor="let task of tasks"
+        [task]="task"
+        (complete)="onComplete($event)"
+        (deleteTask)="confirmDelete($event)"
+      ></app-task-card>
+    </div>
+
+    <p class="results-count" *ngIf="!loading">Showing {{ tasks.length }} task(s)</p>
+  </div>
+</div>
+
+<!-- Delete confirmation modal -->
+<div class="modal-backdrop" *ngIf="showDeleteModal" (click)="cancelDelete()">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <i class="fa-solid fa-triangle-exclamation warn-icon"></i>
+    <h4>Delete Task?</h4>
+    <p>Are you sure you want to delete "<strong>{{ taskToDelete?.taskName }}</strong>"? This cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn-outline" (click)="cancelDelete()">Cancel</button>
+      <button class="btn-danger" (click)="proceedDelete()">Delete</button>
+    </div>
+  </div>
+</div>

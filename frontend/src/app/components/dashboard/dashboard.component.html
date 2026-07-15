@@ -1,0 +1,77 @@
+<div class="page-content">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon icon-blue"><i class="fa-solid fa-clipboard-list"></i></div>
+      <div>
+        <h2>{{ stats.total }}</h2>
+        <p>Total Tasks</p>
+        <span>All team tasks</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon icon-orange"><i class="fa-regular fa-clock"></i></div>
+      <div>
+        <h2>{{ stats.pending }}</h2>
+        <p>Pending Tasks</p>
+        <span>Tasks not completed</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon icon-green"><i class="fa-solid fa-circle-check"></i></div>
+      <div>
+        <h2>{{ stats.completed }}</h2>
+        <p>Completed Tasks</p>
+        <span>Finished tasks</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon icon-red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <div>
+        <h2>{{ stats.highPriority }}</h2>
+        <p>High Priority Tasks</p>
+        <span>Urgent tasks</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <h3>Recent Team Tasks</h3>
+      <a routerLink="/tasks/add" class="btn-primary"><i class="fa-solid fa-plus"></i> Add Task</a>
+    </div>
+
+    <div *ngIf="loading" class="spinner-wrap">
+      <div class="spinner"></div>
+    </div>
+
+    <div *ngIf="!loading && recentTasks.length === 0" class="empty-state">
+      <i class="fa-solid fa-clipboard-list"></i>
+      <p>No tasks yet. Add your first cricket team task!</p>
+    </div>
+
+    <div class="table-responsive" *ngIf="!loading && recentTasks.length > 0">
+      <table class="task-table">
+        <thead>
+          <tr>
+            <th>Task Name</th>
+            <th>Category</th>
+            <th>Assigned To</th>
+            <th>Priority</th>
+            <th>Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let task of recentTasks">
+            <td class="fw-bold">{{ task.taskName }}</td>
+            <td><span class="pill">{{ task.category }}</span></td>
+            <td>{{ task.assignedTo }}</td>
+            <td><span class="badge" [ngClass]="priorityClass(task.priority)">{{ task.priority }}</span></td>
+            <td>{{ task.practiceDate | date: 'dd-MM-yyyy' }}</td>
+            <td><span class="badge" [ngClass]="statusClass(task.status)">{{ task.status }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

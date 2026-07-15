@@ -1,0 +1,20 @@
+.filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.results-count {
+  margin-top: 12px;
+  color: #868e96;
+  font-size: 13px;
+  text-align: center;
+}
+
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
