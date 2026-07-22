@@ -1,5 +1,13 @@
 const mongoose = require('mongoose');
 
+const noteSchema = new mongoose.Schema(
+  {
+    text: { type: String, required: true, trim: true },
+    author: { type: String, default: 'Coach', trim: true }
+  },
+  { timestamps: true }
+);
+
 const taskSchema = new mongoose.Schema(
   {
     taskName: {
@@ -40,6 +48,11 @@ const taskSchema = new mongoose.Schema(
         'Entire Team'
       ]
     },
+    player: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Player',
+      default: null
+    },
     priority: {
       type: String,
       required: true,
@@ -52,13 +65,21 @@ const taskSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Pending', 'Completed'],
+      enum: ['Pending', 'In Progress', 'Completed'],
       default: 'Pending'
     },
     description: {
       type: String,
       trim: true,
       default: ''
+    },
+    tags: {
+      type: [String],
+      default: []
+    },
+    notes: {
+      type: [noteSchema],
+      default: []
     }
   },
   { timestamps: true }

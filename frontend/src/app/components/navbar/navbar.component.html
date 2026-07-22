@@ -1,15 +1,27 @@
 <aside class="sidebar">
   <div class="sidebar-brand">
-    <i class="fa-solid fa-person-running brand-icon"></i>
+    <i class="fa-solid fa-baseball-bat-ball brand-icon"></i>
     <div>
-      <h2>CTTMS</h2>
-      <span>Cricket Team Task Management System</span>
+      <h2>CRICHEROES</h2>
+      <span>Cricket Tournament & Task System</span>
     </div>
   </div>
 
   <nav class="sidebar-nav">
     <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
       <i class="fa-solid fa-table-columns"></i> Dashboard
+    </a>
+    <a routerLink="/matches" routerLinkActive="active" class="nav-item">
+      <i class="fa-solid fa-crosshairs"></i> Matches & Live Scoring
+    </a>
+    <a routerLink="/tournaments" routerLinkActive="active" class="nav-item">
+      <i class="fa-solid fa-trophy"></i> Tournaments & Tables
+    </a>
+    <a routerLink="/leaderboard" routerLinkActive="active" class="nav-item">
+      <i class="fa-solid fa-ranking-star"></i> CricHeroes Stats
+    </a>
+    <a routerLink="/squad" routerLinkActive="active" class="nav-item">
+      <i class="fa-solid fa-users"></i> Squad Roster
     </a>
     <a routerLink="/tasks" routerLinkActive="active" class="nav-item">
       <i class="fa-solid fa-clipboard-list"></i> Team Tasks
@@ -21,12 +33,12 @@
       <i class="fa-solid fa-circle-check"></i> Completed Tasks
     </a>
     <a routerLink="/reports" routerLinkActive="active" class="nav-item">
-      <i class="fa-solid fa-chart-simple"></i> Reports
+      <i class="fa-solid fa-chart-simple"></i> Reports & Analytics
     </a>
   </nav>
 
   <div class="sidebar-illustration">
-    <i class="fa-solid fa-baseball-bat-ball"></i>
+    <i class="fa-solid fa-trophy"></i>
   </div>
 </aside>
 
@@ -34,12 +46,65 @@
   <button class="hamburger" (click)="toggleSidebar()">
     <i class="fa-solid fa-bars"></i>
   </button>
-  <h1 class="topbar-title">Cricket Team Task Management System</h1>
+  <h1 class="topbar-title">CricHeroes & Stumps Management App</h1>
   <div class="topbar-right">
-    <i class="fa-regular fa-bell"></i>
+    <!-- Notification Bell Dropdown Button -->
+    <div class="notification-wrapper">
+      <button class="bell-btn" (click)="toggleNotifications()" title="Notifications">
+        <i class="fa-regular fa-bell"></i>
+        <span *ngIf="(unreadCount$ | async) as count" class="unread-badge">
+          {{ count > 99 ? '99+' : count }}
+        </span>
+      </button>
+
+      <!-- Notification Popover Menu -->
+      <div *ngIf="showNotifications" class="notification-dropdown">
+        <div class="dropdown-header">
+          <div class="title-row">
+            <h5><i class="fa-solid fa-bell me-1"></i> Notifications</h5>
+            <span *ngIf="(unreadCount$ | async) as count" class="badge badge-high">{{ count }} Unread</span>
+          </div>
+          <div class="header-actions">
+            <button class="btn-link" (click)="markAllAsRead()">Mark all read</button>
+            <button class="btn-link text-danger" (click)="clearAll()">Clear</button>
+          </div>
+        </div>
+
+        <div class="dropdown-body">
+          <div *ngIf="(notifications$ | async)?.length === 0" class="empty-notifs">
+            <i class="fa-regular fa-bell-slash"></i>
+            <p>No notifications yet</p>
+          </div>
+
+          <div *ngFor="let item of notifications$ | async" class="notif-item" [class.unread]="!item.isRead">
+            <div class="notif-icon" [ngClass]="item.type">
+              <i class="fa-solid" [ngClass]="{
+                'fa-circle-info': item.type === 'info',
+                'fa-circle-check': item.type === 'success',
+                'fa-triangle-exclamation': item.type === 'warning',
+                'fa-circle-exclamation': item.type === 'error'
+              }"></i>
+            </div>
+            <div class="notif-content">
+              <p class="msg">{{ item.message }}</p>
+              <span class="time">{{ item.createdAt | date: 'shortTime' }} &bull; {{ item.createdAt | date: 'shortDate' }}</span>
+            </div>
+            <div class="notif-actions">
+              <button *ngIf="!item.isRead" class="icon-btn-xs" title="Mark as read" (click)="markAsRead(item, $event)">
+                <i class="fa-solid fa-check"></i>
+              </button>
+              <button class="icon-btn-xs danger" title="Delete" (click)="deleteNotification(item, $event)">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="coach-badge">
       <i class="fa-solid fa-user-tie"></i>
-      <span>Coach</span>
+      <span>Head Coach & Scorer</span>
       <i class="fa-solid fa-chevron-down"></i>
     </div>
   </div>

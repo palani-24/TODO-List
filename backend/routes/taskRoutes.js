@@ -7,11 +7,18 @@ const {
   updateTask,
   deleteTask,
   completeTask,
-  getStats
+  updateStatus,
+  addNote,
+  deleteNote,
+  getStats,
+  exportCsv,
+  getAllTags
 } = require('../controllers/taskController');
 
-// Stats route must come before /:id to avoid being treated as an id
+// Static routes must come before /:id to avoid being treated as an id
 router.get('/stats/summary', getStats);
+router.get('/export/csv', exportCsv);
+router.get('/tags/all', getAllTags);
 
 router.route('/')
   .get(getTasks)
@@ -23,5 +30,11 @@ router.route('/:id')
   .delete(deleteTask);
 
 router.patch('/:id/complete', completeTask);
+router.patch('/:id/status', updateStatus);
+
+router.route('/:id/notes')
+  .post(addNote);
+
+router.delete('/:id/notes/:noteId', deleteNote);
 
 module.exports = router;

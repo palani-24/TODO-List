@@ -13,11 +13,14 @@ import {
 } from '@angular/router';
 
 import { TaskService } from '../../services/task.service';
+import { PlayerService } from '../../services/player.service';
 import { ToastService } from '../../services/toast.service';
+import { Player } from '../../models/player.model';
 import {
   CATEGORY_OPTIONS,
   ASSIGNED_TO_OPTIONS,
-  PRIORITY_OPTIONS
+  PRIORITY_OPTIONS,
+  STATUS_OPTIONS
 } from '../../models/task.model';
 
 @Component({
@@ -32,7 +35,9 @@ export class EditTaskComponent implements OnInit {
   categoryOptions = CATEGORY_OPTIONS;
   assignedToOptions = ASSIGNED_TO_OPTIONS;
   priorityOptions = PRIORITY_OPTIONS;
+  statusOptions = STATUS_OPTIONS;
 
+  players: Player[] = [];
   submitting = false;
   loading = true;
   taskId = '';
@@ -42,6 +47,7 @@ export class EditTaskComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private taskService: TaskService,
+    private playerService: PlayerService,
     private toast: ToastService,
     private router: Router,
     private route: ActivatedRoute
@@ -50,9 +56,11 @@ export class EditTaskComponent implements OnInit {
       taskName: ['', [Validators.required, Validators.minLength(3)]],
       category: ['', Validators.required],
       assignedTo: ['', Validators.required],
+      player: [''],
       priority: ['Medium', Validators.required],
       practiceDate: ['', Validators.required],
       status: ['Pending', Validators.required],
+      tagsInput: [''],
       description: ['']
     });
   }
@@ -64,19 +72,30 @@ export class EditTaskComponent implements OnInit {
   ngOnInit(): void {
     this.taskId = this.route.snapshot.paramMap.get('id') || '';
 
+    // Load active players
+    this.playerService.getPlayers({ isActive: true }).subscribe({
+      next: (res) => {
+        if (res.success) this.players = res.data;
+      }
+    });
+
+    // Load task
     this.taskService.getTask(this.taskId).subscribe({
       next: (res) => {
         const task = res.data;
+
+        const playerId = typeof task.player === 'object' && task.player ? task.player._id : (task.player || '');
+        const tagsJoined = task.tags ? task.tags.join(', ') : '';
 
         this.form.patchValue({
           taskName: task.taskName,
           category: task.category,
           assignedTo: task.assignedTo,
+          player: playerId,
           priority: task.priority,
-          practiceDate: task.practiceDate
-            ? task.practiceDate.substring(0, 10)
-            : '',
+          practiceDate: task.practiceDate ? task.practiceDate.substring(0, 10) : '',
           status: task.status,
+          tagsInput: tagsJoined,
           description: task.description
         });
 
@@ -98,7 +117,24 @@ export class EditTaskComponent implements OnInit {
 
     this.submitting = true;
 
-    this.taskService.updateTask(this.taskId, this.form.value).subscribe({
+    const val = this.form.value;
+    const tagsArray = val.tagsInput
+      ? val.tagsInput.split(',').map((t: string) => t.trim()).filter((t: string) => t.length > 0)
+      : [];
+
+    const payload = {
+      taskName: val.taskName,
+      category: val.category,
+      assignedTo: val.assignedTo,
+      player: val.player || null,
+      priority: val.priority,
+      practiceDate: val.practiceDate,
+      status: val.status,
+      tags: tagsArray,
+      description: val.description
+    };
+
+    this.taskService.updateTask(this.taskId, payload as any).subscribe({
       next: () => {
         this.toast.show('Task updated successfully', 'success');
         this.router.navigate(['/tasks']);

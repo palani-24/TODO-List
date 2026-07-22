@@ -1,11 +1,40 @@
 <div class="page-content">
+  <!-- Quick Shortcuts Bar -->
+  <div class="quick-actions-bar mb-4">
+    <div class="welcome-text">
+      <h2><i class="fa-solid fa-baseball-bat-ball me-2"></i> Coach Control Center</h2>
+      <p>Manage squad tasks, match preparations, and team tactics in one place</p>
+    </div>
+    <div class="action-buttons">
+      <a routerLink="/tasks/add" class="btn-primary">
+        <i class="fa-solid fa-plus"></i> Add Task
+      </a>
+      <a routerLink="/squad" class="btn-outline">
+        <i class="fa-solid fa-user-plus"></i> Add Player
+      </a>
+      <a routerLink="/matches" class="btn-outline">
+        <i class="fa-solid fa-calendar-plus"></i> Schedule Match
+      </a>
+    </div>
+  </div>
+
+  <!-- Overdue Alert Banner -->
+  <div *ngIf="stats.overdue && stats.overdue > 0" class="overdue-alert-banner mb-4">
+    <div class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <div class="alert-info">
+      <strong>Attention Coach:</strong> You have <span>{{ stats.overdue }} overdue practice task(s)</span> requiring immediate team action.
+    </div>
+    <a routerLink="/tasks" [queryParams]="{ overdue: true }" class="btn-alert">View Overdue Tasks</a>
+  </div>
+
+  <!-- Stats Grid -->
   <div class="stats-grid">
     <div class="stat-card">
       <div class="stat-icon icon-blue"><i class="fa-solid fa-clipboard-list"></i></div>
       <div>
         <h2>{{ stats.total }}</h2>
-        <p>Total Tasks</p>
-        <span>All team tasks</span>
+        <p>Total Practice Tasks</p>
+        <span>All team drills</span>
       </div>
     </div>
     <div class="stat-card">
@@ -13,7 +42,7 @@
       <div>
         <h2>{{ stats.pending }}</h2>
         <p>Pending Tasks</p>
-        <span>Tasks not completed</span>
+        <span>Tasks remaining</span>
       </div>
     </div>
     <div class="stat-card">
@@ -21,7 +50,7 @@
       <div>
         <h2>{{ stats.completed }}</h2>
         <p>Completed Tasks</p>
-        <span>Finished tasks</span>
+        <span>Finished drills</span>
       </div>
     </div>
     <div class="stat-card">
@@ -29,49 +58,106 @@
       <div>
         <h2>{{ stats.highPriority }}</h2>
         <p>High Priority Tasks</p>
-        <span>Urgent tasks</span>
+        <span>Match critical</span>
       </div>
     </div>
   </div>
 
-  <div class="panel">
-    <div class="panel-header">
-      <h3>Recent Team Tasks</h3>
-      <a routerLink="/tasks/add" class="btn-primary"><i class="fa-solid fa-plus"></i> Add Task</a>
+  <!-- Main Dashboard Grid -->
+  <div class="dashboard-grid mt-4">
+    <!-- Main Column: Recent Tasks -->
+    <div class="panel main-col">
+      <div class="panel-header">
+        <h3><i class="fa-solid fa-list-check me-2"></i> Recent Team Tasks</h3>
+        <a routerLink="/tasks" class="btn-outline btn-sm">View All Tasks</a>
+      </div>
+
+      <div *ngIf="loading" class="spinner-wrap">
+        <div class="spinner"></div>
+      </div>
+
+      <div *ngIf="!loading && recentTasks.length === 0" class="empty-state">
+        <i class="fa-solid fa-clipboard-list"></i>
+        <p>No tasks yet. Add your first cricket team task!</p>
+      </div>
+
+      <div class="table-responsive" *ngIf="!loading && recentTasks.length > 0">
+        <table class="task-table">
+          <thead>
+            <tr>
+              <th>Task Name</th>
+              <th>Category</th>
+              <th>Assigned To</th>
+              <th>Priority</th>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let task of recentTasks">
+              <td class="fw-bold">{{ task.taskName }}</td>
+              <td><span class="pill">{{ task.category }}</span></td>
+              <td>{{ task.assignedTo }}</td>
+              <td><span class="badge" [ngClass]="priorityClass(task.priority)">{{ task.priority }}</span></td>
+              <td>{{ task.practiceDate | date: 'dd-MM-yyyy' }}</td>
+              <td><span class="badge" [ngClass]="statusClass(task.status)">{{ task.status }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div *ngIf="loading" class="spinner-wrap">
-      <div class="spinner"></div>
-    </div>
+    <!-- Side Column: Fixtures & Squad Widgets -->
+    <div class="side-col">
+      <!-- Upcoming Matches Widget -->
+      <div class="panel mb-4">
+        <div class="panel-header">
+          <h3><i class="fa-solid fa-calendar-days me-2"></i> Upcoming Fixtures</h3>
+          <a routerLink="/matches" class="btn-link-sm">View All</a>
+        </div>
 
-    <div *ngIf="!loading && recentTasks.length === 0" class="empty-state">
-      <i class="fa-solid fa-clipboard-list"></i>
-      <p>No tasks yet. Add your first cricket team task!</p>
-    </div>
+        <div *ngIf="upcomingMatches.length === 0" class="empty-state p-3">
+          <i class="fa-solid fa-calendar-xmark" style="font-size: 24px;"></i>
+          <p class="small mb-0">No upcoming matches scheduled</p>
+        </div>
 
-    <div class="table-responsive" *ngIf="!loading && recentTasks.length > 0">
-      <table class="task-table">
-        <thead>
-          <tr>
-            <th>Task Name</th>
-            <th>Category</th>
-            <th>Assigned To</th>
-            <th>Priority</th>
-            <th>Date</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let task of recentTasks">
-            <td class="fw-bold">{{ task.taskName }}</td>
-            <td><span class="pill">{{ task.category }}</span></td>
-            <td>{{ task.assignedTo }}</td>
-            <td><span class="badge" [ngClass]="priorityClass(task.priority)">{{ task.priority }}</span></td>
-            <td>{{ task.practiceDate | date: 'dd-MM-yyyy' }}</td>
-            <td><span class="badge" [ngClass]="statusClass(task.status)">{{ task.status }}</span></td>
-          </tr>
-        </tbody>
-      </table>
+        <div *ngIf="upcomingMatches.length > 0" class="widget-list">
+          <div *ngFor="let m of upcomingMatches" class="widget-match-item">
+            <div class="match-fmt" [ngClass]="m.matchType.toLowerCase().replace(' ', '-')">{{ m.matchType }}</div>
+            <div class="match-details">
+              <strong>vs {{ m.opponent }}</strong>
+              <div class="sub-text"><i class="fa-solid fa-location-dot me-1"></i> {{ m.venue }}</div>
+            </div>
+            <div class="match-date-badge">
+              {{ m.matchDate | date: 'MMM dd' }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Squad Roster Widget -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3><i class="fa-solid fa-users me-2"></i> Active Squad</h3>
+          <a routerLink="/squad" class="btn-link-sm">Squad Roster</a>
+        </div>
+
+        <div *ngIf="squadSummary.length === 0" class="empty-state p-3">
+          <i class="fa-solid fa-user-slash" style="font-size: 24px;"></i>
+          <p class="small mb-0">No players registered yet</p>
+        </div>
+
+        <div *ngIf="squadSummary.length > 0" class="widget-squad-list">
+          <div *ngFor="let p of squadSummary" class="widget-player-item">
+            <div class="player-num">#{{ p.jerseyNumber }}</div>
+            <div class="player-meta">
+              <strong>{{ p.name }}</strong>
+              <span class="role-sub">{{ p.role }}</span>
+            </div>
+            <span class="active-dot" title="Active"></span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

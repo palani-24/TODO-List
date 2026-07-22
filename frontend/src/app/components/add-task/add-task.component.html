@@ -1,14 +1,14 @@
 <div class="page-content">
   <div class="panel form-panel">
     <div class="panel-header">
-      <h3><i class="fa-solid fa-plus"></i> Add New Task</h3>
+      <h3><i class="fa-solid fa-plus"></i> Add New Practice Task</h3>
       <a routerLink="/tasks" class="btn-outline"><i class="fa-solid fa-arrow-left"></i> Back</a>
     </div>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="task-form">
       <div class="form-row">
         <label>Task Name</label>
-        <input type="text" formControlName="taskName" placeholder="e.g. Batting Practice" />
+        <input type="text" formControlName="taskName" placeholder="e.g. Batting Practice — Power Hitting" />
         <small class="error" *ngIf="f['taskName'].touched && f['taskName'].invalid">
           Task name is required (min 3 characters).
         </small>
@@ -25,9 +25,9 @@
         </div>
 
         <div class="form-row">
-          <label>Assigned To</label>
+          <label>Assigned Group / Unit</label>
           <select formControlName="assignedTo">
-            <option value="" disabled>Select player/group</option>
+            <option value="" disabled>Select group</option>
             <option *ngFor="let a of assignedToOptions" [value]="a">{{ a }}</option>
           </select>
           <small class="error" *ngIf="f['assignedTo'].touched && f['assignedTo'].invalid">Assignee is required.</small>
@@ -36,30 +36,46 @@
 
       <div class="form-grid">
         <div class="form-row">
+          <label>Specific Player (Optional)</label>
+          <select formControlName="player">
+            <option value="">None (Group Assignment)</option>
+            <option *ngFor="let p of players" [value]="p._id">
+              #{{ p.jerseyNumber }} {{ p.name }} ({{ p.role }})
+            </option>
+          </select>
+        </div>
+
+        <div class="form-row">
           <label>Priority</label>
           <select formControlName="priority">
             <option *ngFor="let p of priorityOptions" [value]="p">{{ p }}</option>
           </select>
         </div>
+      </div>
 
+      <div class="form-grid">
         <div class="form-row">
           <label>Practice Date</label>
           <input type="date" formControlName="practiceDate" />
           <small class="error" *ngIf="f['practiceDate'].touched && f['practiceDate'].invalid">Date is required.</small>
         </div>
+
+        <div class="form-row">
+          <label>Status</label>
+          <select formControlName="status">
+            <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
+          </select>
+        </div>
       </div>
 
       <div class="form-row">
-        <label>Status</label>
-        <select formControlName="status">
-          <option value="Pending">Pending</option>
-          <option value="Completed">Completed</option>
-        </select>
+        <label>Tags (Comma separated)</label>
+        <input type="text" formControlName="tagsInput" placeholder="e.g. nets, death-overs, match-prep" />
       </div>
 
       <div class="form-row">
-        <label>Description</label>
-        <textarea formControlName="description" rows="4" placeholder="Optional notes about this task..."></textarea>
+        <label>Description & Objectives</label>
+        <textarea formControlName="description" rows="4" placeholder="Specific coaching instructions and drills..."></textarea>
       </div>
 
       <div class="form-actions">

@@ -21,6 +21,7 @@
 
   .brand-icon {
     font-size: 28px;
+    color: #a3e635;
   }
 
   h2 {
@@ -64,6 +65,7 @@
     &.active {
       background: rgba(255, 255, 255, 0.16);
       color: #fff;
+      font-weight: 700;
     }
   }
 }
@@ -99,7 +101,7 @@
 }
 
 .topbar-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #212529;
   margin: 0;
@@ -111,17 +113,184 @@
   align-items: center;
   gap: 20px;
 
-  i.fa-bell {
-    font-size: 18px;
-    color: #495057;
-  }
-
   .coach-badge {
     display: flex;
     align-items: center;
     gap: 8px;
     font-weight: 600;
     color: #212529;
+    background: #f8f9fa;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid #e9ecef;
+  }
+}
+
+.notification-wrapper {
+  position: relative;
+
+  .bell-btn {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    color: #495057;
+    font-size: 16px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #e9ecef;
+      color: var(--cricket-green);
+    }
+
+    .unread-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #e03131;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 10px;
+      border: 2px solid #ffffff;
+    }
+  }
+
+  .notification-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    width: 360px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e9ecef;
+    z-index: 2000;
+    overflow: hidden;
+
+    .dropdown-header {
+      padding: 14px 18px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e9ecef;
+
+      .title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        h5 {
+          margin: 0;
+          font-size: 15px;
+          font-weight: 700;
+        }
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 6px;
+
+        .btn-link {
+          background: none;
+          border: none;
+          padding: 0;
+          font-size: 12px;
+          color: var(--cricket-green);
+          cursor: pointer;
+          font-weight: 600;
+
+          &.text-danger {
+            color: #e03131;
+          }
+        }
+      }
+    }
+
+    .dropdown-body {
+      max-height: 380px;
+      overflow-y: auto;
+
+      .empty-notifs {
+        padding: 40px 20px;
+        text-align: center;
+        color: #adb5bd;
+        i { font-size: 32px; margin-bottom: 8px; }
+        p { margin: 0; font-size: 13px; }
+      }
+
+      .notif-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px 16px;
+        border-bottom: 1px solid #f1f3f5;
+        transition: background 0.15s ease;
+
+        &.unread {
+          background: #f0fdf4;
+        }
+
+        .notif-icon {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 14px;
+          flex-shrink: 0;
+
+          &.info { background: #e7f0ff; color: #1971c2; }
+          &.success { background: #e6f7ee; color: #0B6E4F; }
+          &.warning { background: #fff4e0; color: #e8590c; }
+          &.error { background: #ffe8e8; color: #e03131; }
+        }
+
+        .notif-content {
+          flex: 1;
+
+          .msg {
+            margin: 0;
+            font-size: 13px;
+            color: #212529;
+            line-height: 1.35;
+          }
+
+          .time {
+            font-size: 11px;
+            color: #868e96;
+            margin-top: 4px;
+            display: block;
+          }
+        }
+
+        .notif-actions {
+          display: flex;
+          gap: 4px;
+
+          .icon-btn-xs {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: none;
+            background: #e9ecef;
+            color: #495057;
+            font-size: 11px;
+            cursor: pointer;
+
+            &:hover { background: #ced4da; }
+            &.danger:hover { background: #ffe8e8; color: #e03131; }
+          }
+        }
+      }
+    }
   }
 }
 

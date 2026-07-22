@@ -1,3 +1,74 @@
+.quick-actions-bar {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  flex-wrap: wrap;
+  gap: 16px;
+  border-left: 5px solid var(--cricket-green);
+
+  .welcome-text {
+    h2 {
+      margin: 0 0 4px;
+      font-size: 20px;
+      font-weight: 800;
+      color: #212529;
+    }
+    p {
+      margin: 0;
+      font-size: 13px;
+      color: #6c757d;
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+}
+
+.overdue-alert-banner {
+  background: #fff5f5;
+  border: 1px solid #ffc9c9;
+  border-radius: 12px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  .alert-icon {
+    font-size: 22px;
+    color: #e03131;
+  }
+
+  .alert-info {
+    flex: 1;
+    font-size: 14px;
+    color: #c92a2a;
+
+    span {
+      font-weight: 800;
+      text-decoration: underline;
+    }
+  }
+
+  .btn-alert {
+    background: #e03131;
+    color: #ffffff;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+
+    &:hover { background: #c92a2a; }
+  }
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -5,9 +76,111 @@
   margin-bottom: 24px;
 }
 
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.badge-progress {
+  background: #e7f0ff;
+  color: #1971c2;
+}
+
+.btn-link-sm {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cricket-green);
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+}
+
+.widget-list, .widget-squad-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.widget-match-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  font-size: 13px;
+
+  .match-fmt {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: #e7f0ff;
+    color: #1971c2;
+    text-transform: uppercase;
+
+    &.t20 { background: #ffe8e8; color: #e03131; }
+    &.odi { background: #e7f0ff; color: #1971c2; }
+    &.test { background: #f3d9fa; color: #9c36b5; }
+    &.practice-match { background: #fff4e0; color: #e8590c; }
+  }
+
+  .match-details {
+    flex: 1;
+    margin-left: 10px;
+    .sub-text { font-size: 11px; color: #868e96; }
+  }
+
+  .match-date-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: #495057;
+    background: #ffffff;
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+  }
+}
+
+.widget-player-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+
+  .player-num {
+    font-weight: 800;
+    font-size: 12px;
+    color: var(--cricket-green);
+    background: #e6f7ee;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  .player-meta {
+    flex: 1;
+    margin-left: 10px;
+    font-size: 13px;
+    .role-sub { display: block; font-size: 11px; color: #868e96; }
+  }
+
+  .active-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #40c057;
+  }
+}
+
 @media (max-width: 992px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .dashboard-grid {
+    grid-template-columns: 1fr;
   }
 }
 

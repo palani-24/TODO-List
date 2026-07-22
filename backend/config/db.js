@@ -1,13 +1,24 @@
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
+  const primaryUri = process.env.MONGO_URI;
+  const localUri = 'mongodb://127.0.0.1:27017/cttms';
+
+  if (primaryUri) {
+    try {
+      await mongoose.connect(primaryUri, { serverSelectionTimeoutMS: 3000 });
+      console.log('✅ Connected to MongoDB Atlas:', primaryUri);
+      return;
+    } catch (err) {
+      console.warn('⚠️ Atlas connection failed, trying local MongoDB...');
+    }
+  }
+
   try {
-    const uri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/cttms';
-    await mongoose.connect(uri);
-    console.log('✅ MongoDB connected:', uri);
+    await mongoose.connect(localUri, { serverSelectionTimeoutMS: 3000 });
+    console.log('✅ Connected to local MongoDB:', localUri);
   } catch (err) {
-    console.error('❌ MongoDB connection error:', err.message);
-    process.exit(1);
+    console.error('❌ Could not connect to local MongoDB. Proceeding in offline mock mode.');
   }
 };
 

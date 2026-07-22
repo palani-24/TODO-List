@@ -18,6 +18,8 @@ export interface TaskFilters {
   priority?: string;
   status?: string;
   sort?: string;
+  tag?: string;
+  overdue?: boolean | string;
 }
 
 @Injectable({
@@ -31,7 +33,9 @@ export class TaskService {
   getTasks(filters: TaskFilters = {}): Observable<ApiResponse<Task[]>> {
     let params = new HttpParams();
     Object.entries(filters).forEach(([key, value]) => {
-      if (value) params = params.set(key, value);
+      if (value !== undefined && value !== '') {
+        params = params.set(key, String(value));
+      }
     });
     return this.http.get<ApiResponse<Task[]>>(this.apiUrl, { params });
   }
@@ -56,7 +60,23 @@ export class TaskService {
     return this.http.patch<ApiResponse<Task>>(`${this.apiUrl}/${id}/complete`, {});
   }
 
+  updateStatus(id: string, status: string): Observable<ApiResponse<Task>> {
+    return this.http.patch<ApiResponse<Task>>(`${this.apiUrl}/${id}/status`, { status });
+  }
+
+  addNote(taskId: string, note: { text: string; author?: string }): Observable<ApiResponse<Task>> {
+    return this.http.post<ApiResponse<Task>>(`${this.apiUrl}/${taskId}/notes`, note);
+  }
+
+  deleteNote(taskId: string, noteId: string): Observable<ApiResponse<Task>> {
+    return this.http.delete<ApiResponse<Task>>(`${this.apiUrl}/${taskId}/notes/${noteId}`);
+  }
+
   getStats(): Observable<ApiResponse<TaskStats>> {
     return this.http.get<ApiResponse<TaskStats>>(`${this.apiUrl}/stats/summary`);
+  }
+
+  getAllTags(): Observable<ApiResponse<string[]>> {
+    return this.http.get<ApiResponse<string[]>>(`${this.apiUrl}/tags/all`);
   }
 }

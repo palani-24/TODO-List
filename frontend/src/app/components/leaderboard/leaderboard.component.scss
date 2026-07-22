@@ -1,0 +1,135 @@
+.leaderboard-hero-banner {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%);
+  color: #ffffff;
+  border-radius: 16px;
+  padding: 24px 30px;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(49, 46, 129, 0.3);
+
+  .banner-badge {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 3px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    margin: 0 0 6px;
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.85;
+  }
+}
+
+.lb-tabs {
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid #f1f3f5;
+  padding-bottom: 14px;
+
+  button {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #495057;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &.active {
+      background: var(--cricket-green);
+      color: #ffffff;
+      border-color: var(--cricket-green);
+
+      i { color: #ffffff !important; }
+    }
+  }
+}
+
+.text-purple { color: #7048e8 !important; }
+.fw-extrabold { font-weight: 800; }
+
+.lb-table {
+  .top-performer {
+    background: #fff9db;
+  }
+
+  .rank-badge {
+    font-weight: 900;
+    font-size: 13px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: #f1f3f5;
+    color: #343a40;
+
+    &.rank-1 { background: #ffe066; color: #5c940d; }
+    &.rank-2 { background: #e9ecef; color: #495057; }
+    &.rank-3 { background: #ffd8a8; color: #d9480f; }
+  }
+
+  .player-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .j-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: #868e96;
+      background: #f8f9fa;
+      padding: 2px 6px;
+      border-radius: 8px;
+    }
+  }
+}
+
+.boundary-kings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+
+  .king-card {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+
+    .king-crown {
+      font-size: 12px;
+      font-weight: 800;
+      color: #495057;
+      margin-bottom: 6px;
+    }
+
+    h4 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .stat-big {
+      font-size: 24px;
+      font-weight: 900;
+      color: #e03131;
+    }
+
+    .stat-sub {
+      font-size: 12px;
+      color: #868e96;
+      margin-top: 4px;
+    }
+  }
+}

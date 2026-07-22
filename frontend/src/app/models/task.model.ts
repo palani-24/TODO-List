@@ -1,12 +1,24 @@
+import { Player } from './player.model';
+
+export interface TaskNote {
+  _id?: string;
+  text: string;
+  author: string;
+  createdAt?: string;
+}
+
 export interface Task {
   _id?: string;
   taskName: string;
   category: string;
   assignedTo: string;
+  player?: Player | string;
   priority: 'High' | 'Medium' | 'Low';
   practiceDate: string;
-  status: 'Pending' | 'Completed';
+  status: 'Pending' | 'In Progress' | 'Completed';
   description?: string;
+  tags?: string[];
+  notes?: TaskNote[];
   createdAt?: string;
   updatedAt?: string;
 }
@@ -40,11 +52,26 @@ export const ASSIGNED_TO_OPTIONS: string[] = [
 
 export const PRIORITY_OPTIONS: string[] = ['High', 'Medium', 'Low'];
 
-export const STATUS_OPTIONS: string[] = ['Pending', 'Completed'];
+export const STATUS_OPTIONS: string[] = ['Pending', 'In Progress', 'Completed'];
+
+export interface WeeklyTrendItem {
+  date: string;
+  day: string;
+  completed: number;
+}
+
+export interface WorkloadItem {
+  _id: string;
+  count: number;
+}
 
 export interface TaskStats {
   total: number;
   pending: number;
+  inProgress?: number;
   completed: number;
   highPriority: number;
+  overdue?: number;
+  weeklyTrend?: WeeklyTrendItem[];
+  workload?: WorkloadItem[];
 }

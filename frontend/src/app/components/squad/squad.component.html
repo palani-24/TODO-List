@@ -1,0 +1,229 @@
+<div class="page-content">
+  <!-- Stats Header Banner -->
+  <div class="squad-stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon icon-green"><i class="fa-solid fa-users"></i></div>
+      <div>
+        <h2>{{ totalCount }}</h2>
+        <p>Total Squad</p>
+        <span>Registered Players</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon icon-blue"><i class="fa-solid fa-user-check"></i></div>
+      <div>
+        <h2>{{ activeCount }}</h2>
+        <p>Active Players</p>
+        <span>Available for selection</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon icon-orange"><i class="fa-solid fa-baseball-bat-ball"></i></div>
+      <div>
+        <h2>{{ batsmenCount }}</h2>
+        <p>Batsmen & Captains</p>
+        <span>Top/Middle order</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon icon-red"><i class="fa-solid fa-bowling-ball"></i></div>
+      <div>
+        <h2>{{ bowlersCount }}</h2>
+        <p>Bowlers</p>
+        <span>Pace & Spin attack</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel Header & Controls -->
+  <div class="panel mt-4">
+    <div class="panel-header">
+      <div>
+        <h3><i class="fa-solid fa-shirt me-2"></i> Team Squad Roster</h3>
+        <p class="text-muted mb-0">Manage players, roles, playing styles, and squad availability</p>
+      </div>
+      <button class="btn-primary" (click)="openAddModal()">
+        <i class="fa-solid fa-user-plus"></i> Add New Player
+      </button>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input
+          type="text"
+          placeholder="Search by player name..."
+          [(ngModel)]="searchTerm"
+          (input)="onFilterChange()"
+        />
+      </div>
+
+      <div class="filter-select">
+        <select [(ngModel)]="selectedRole" (change)="onFilterChange()">
+          <option value="">All Roles</option>
+          <option *ngFor="let role of roleOptions" [value]="role">{{ role }}</option>
+        </select>
+      </div>
+
+      <div class="filter-select">
+        <select [(ngModel)]="selectedStatus" (change)="onFilterChange()">
+          <option value="">All Statuses</option>
+          <option value="true">Active Only</option>
+          <option value="false">Inactive Only</option>
+        </select>
+      </div>
+
+      <button class="btn-outline btn-sm" (click)="resetFilters()">
+        <i class="fa-solid fa-rotate-left"></i> Reset
+      </button>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="spinner-wrap">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && players.length === 0" class="empty-state">
+      <i class="fa-solid fa-user-slash"></i>
+      <p>No players found in the squad roster matching your filter criteria.</p>
+      <button class="btn-outline mt-2" (click)="resetFilters()">Clear Filters</button>
+    </div>
+
+    <!-- Player Cards Grid -->
+    <div *ngIf="!loading && players.length > 0" class="squad-grid mt-3">
+      <div *ngFor="let player of players" class="player-card" [class.inactive]="!player.isActive">
+        <div class="jersey-badge">
+          <span>#{{ player.jerseyNumber }}</span>
+        </div>
+
+        <div class="player-header">
+          <div class="player-avatar">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <div class="player-info">
+            <h4>{{ player.name }}</h4>
+            <span class="role-pill" [ngClass]="player.role.toLowerCase().replace(' ', '-')">
+              {{ player.role }}
+            </span>
+          </div>
+        </div>
+
+        <div class="player-details">
+          <div class="detail-row">
+            <span class="label"><i class="fa-solid fa-hand-holding me-1"></i> Batting:</span>
+            <span class="val">{{ player.battingStyle }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label"><i class="fa-solid fa-bowling-ball me-1"></i> Bowling:</span>
+            <span class="val">{{ player.bowlingStyle }}</span>
+          </div>
+          <div *ngIf="player.phone" class="detail-row">
+            <span class="label"><i class="fa-solid fa-phone me-1"></i> Phone:</span>
+            <span class="val">{{ player.phone }}</span>
+          </div>
+        </div>
+
+        <div class="player-footer">
+          <button
+            class="status-toggle-btn"
+            [class.active-btn]="player.isActive"
+            (click)="togglePlayerActive(player, $event)"
+          >
+            <i class="fa-solid" [class.fa-check]="player.isActive" [class.fa-ban]="!player.isActive"></i>
+            {{ player.isActive ? 'Active' : 'Inactive' }}
+          </button>
+
+          <div class="card-actions">
+            <button class="icon-btn" title="Edit Player" (click)="openEditModal(player)">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button class="icon-btn danger" title="Delete Player" (click)="confirmDelete(player, $event)">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Player Modal -->
+<div *ngIf="showPlayerModal" class="modal-backdrop">
+  <div class="modal-box player-modal-box">
+    <div class="modal-header">
+      <h4>{{ isEditMode ? 'Edit Squad Player' : 'Add Player to Squad' }}</h4>
+      <button class="close-btn" (click)="closePlayerModal()">&times;</button>
+    </div>
+
+    <form (ngSubmit)="savePlayer()" class="modal-form">
+      <div class="form-row">
+        <label>Player Name <span class="text-danger">*</span></label>
+        <input type="text" [(ngModel)]="playerForm.name" name="name" required placeholder="e.g. Virat Kohli" />
+      </div>
+
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label>Jersey Number <span class="text-danger">*</span></label>
+          <input type="number" [(ngModel)]="playerForm.jerseyNumber" name="jerseyNumber" min="1" max="99" required />
+        </div>
+
+        <div class="form-row">
+          <label>Squad Role <span class="text-danger">*</span></label>
+          <select [(ngModel)]="playerForm.role" name="role" required>
+            <option *ngFor="let r of roleOptions" [value]="r">{{ r }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label>Batting Style</label>
+          <select [(ngModel)]="playerForm.battingStyle" name="battingStyle">
+            <option *ngFor="let style of battingStyleOptions" [value]="style">{{ style }}</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>Bowling Style</label>
+          <select [(ngModel)]="playerForm.bowlingStyle" name="bowlingStyle">
+            <option *ngFor="let style of bowlingStyleOptions" [value]="style">{{ style }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Phone Number (Optional)</label>
+        <input type="text" [(ngModel)]="playerForm.phone" name="phone" placeholder="e.g. +91 9876543210" />
+      </div>
+
+      <div class="form-check-row">
+        <input type="checkbox" id="isActiveCheck" [(ngModel)]="playerForm.isActive" name="isActive" />
+        <label for="isActiveCheck">Available for Selection (Active Player)</label>
+      </div>
+
+      <div class="modal-actions mt-3">
+        <button type="button" class="btn-outline" (click)="closePlayerModal()">Cancel</button>
+        <button type="submit" class="btn-primary">
+          <i class="fa-solid fa-floppy-disk"></i> {{ isEditMode ? 'Update Player' : 'Save Player' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Delete Player Confirmation Modal -->
+<div *ngIf="showDeleteModal" class="modal-backdrop">
+  <div class="modal-box">
+    <i class="fa-solid fa-triangle-exclamation warn-icon"></i>
+    <h4>Remove Player?</h4>
+    <p>Are you sure you want to remove <strong>{{ playerToDelete?.name }}</strong> (#{{ playerToDelete?.jerseyNumber }}) from the team roster?</p>
+    <div class="modal-actions">
+      <button class="btn-outline" (click)="closeDeleteModal()">Cancel</button>
+      <button class="btn-danger" (click)="deletePlayer()">
+        <i class="fa-solid fa-trash me-1"></i> Remove
+      </button>
+    </div>
+  </div>
+</div>

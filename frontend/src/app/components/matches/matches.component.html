@@ -1,0 +1,271 @@
+<div class="page-content">
+  <!-- Next Match Hero Feature Banner -->
+  <div *ngIf="nextMatch" class="hero-match-banner">
+    <div class="banner-badge">
+      <i class="fa-solid fa-fire me-1"></i> NEXT UPCOMING MATCH
+    </div>
+    <div class="banner-content">
+      <div class="team-vs">
+        <div class="team-col">
+          <div class="team-flag"><i class="fa-solid fa-shield-halved"></i></div>
+          <h3>INDIA</h3>
+        </div>
+        <div class="vs-badge">VS</div>
+        <div class="team-col">
+          <div class="team-flag opponent-flag"><i class="fa-solid fa-trophy"></i></div>
+          <h3>{{ nextMatch.opponent.toUpperCase() }}</h3>
+        </div>
+      </div>
+
+      <div class="match-meta">
+        <div class="meta-item">
+          <i class="fa-regular fa-calendar"></i>
+          <span>{{ nextMatch.matchDate | date: 'fullDate' }}</span>
+        </div>
+        <div class="meta-item">
+          <i class="fa-solid fa-location-dot"></i>
+          <span>{{ nextMatch.venue }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="format-pill">{{ nextMatch.matchType }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="banner-countdown-actions">
+      <div class="banner-countdown">
+        <div class="days-num">{{ getDaysRemaining(nextMatch.matchDate) }}</div>
+        <div class="days-label">Days Until Match</div>
+      </div>
+      <a [routerLink]="['/live-score', nextMatch._id]" class="btn-live-scoring mt-2">
+        <i class="fa-solid fa-tower-broadcast"></i> Start Live Scorer
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="match-stats-grid mt-4">
+    <div class="stat-card">
+      <div class="stat-icon icon-blue"><i class="fa-solid fa-calendar-days"></i></div>
+      <div>
+        <h2>{{ totalMatches }}</h2>
+        <p>Total Fixtures</p>
+        <span>Scheduled Matches</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon icon-orange"><i class="fa-solid fa-hourglass-half"></i></div>
+      <div>
+        <h2>{{ upcomingCount }}</h2>
+        <p>Upcoming</p>
+        <span>Next Matches</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon icon-green"><i class="fa-solid fa-trophy"></i></div>
+      <div>
+        <h2>{{ winsCount }}</h2>
+        <p>Matches Won</p>
+        <span>Victories</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon icon-red"><i class="fa-solid fa-circle-xmark"></i></div>
+      <div>
+        <h2>{{ lossesCount }}</h2>
+        <p>Defeats</p>
+        <span>Matches Lost</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel Header & Controls -->
+  <div class="panel mt-4">
+    <div class="panel-header">
+      <div>
+        <h3><i class="fa-solid fa-crosshairs me-2"></i> Match Schedule & Live Digital Scoring</h3>
+        <p class="text-muted mb-0">Plan tactics, track fixtures, and score live ball-by-ball</p>
+      </div>
+      <button class="btn-primary" (click)="openAddModal()">
+        <i class="fa-solid fa-plus"></i> Schedule New Match
+      </button>
+    </div>
+
+    <!-- Tabs & Filter Bar -->
+    <div class="match-filter-bar">
+      <div class="tabs">
+        <button [class.active]="activeTab === 'all'" (click)="setTab('all')">
+          All Matches ({{ matches.length }})
+        </button>
+        <button [class.active]="activeTab === 'upcoming'" (click)="setTab('upcoming')">
+          Upcoming ({{ upcomingCount }})
+        </button>
+        <button [class.active]="activeTab === 'past'" (click)="setTab('past')">
+          Results ({{ matches.length - upcomingCount }})
+        </button>
+      </div>
+
+      <div class="filter-select">
+        <select [(ngModel)]="selectedFormat" (change)="onFormatChange()">
+          <option value="">All Formats</option>
+          <option *ngFor="let fmt of formatOptions" [value]="fmt">{{ fmt }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="spinner-wrap">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && filteredMatches.length === 0" class="empty-state">
+      <i class="fa-solid fa-calendar-xmark"></i>
+      <p>No matches found in this category.</p>
+    </div>
+
+    <!-- Match Cards List -->
+    <div *ngIf="!loading && filteredMatches.length > 0" class="match-list mt-3">
+      <div *ngFor="let match of filteredMatches" class="match-item-card">
+        <div class="match-type-tag" [ngClass]="match.matchType.toLowerCase().replace(' ', '-')">
+          {{ match.matchType }}
+        </div>
+
+        <div class="match-info">
+          <div class="teams-line">
+            <span class="home-team">India</span>
+            <span class="vs">vs</span>
+            <span class="opponent-team">{{ match.opponent }}</span>
+          </div>
+
+          <div class="venue-line">
+            <i class="fa-solid fa-location-dot me-1"></i> {{ match.venue }} &bull;
+            <i class="fa-regular fa-calendar ms-1 me-1"></i> {{ match.matchDate | date: 'mediumDate' }}
+          </div>
+
+          <div *ngIf="match.notes" class="match-notes text-muted small mt-1">
+            <i class="fa-solid fa-quote-left me-1"></i> {{ match.notes }}
+          </div>
+        </div>
+
+        <!-- Scores / Result -->
+        <div class="match-score-section">
+          <div *ngIf="match.result !== 'Upcoming'" class="scores-display">
+            <span class="score">IND: {{ match.ourScore || 'N/A' }}</span>
+            <span class="score-divider">|</span>
+            <span class="score">{{ match.opponent }}: {{ match.theirScore || 'N/A' }}</span>
+          </div>
+
+          <span
+            class="result-badge"
+            [ngClass]="{
+              'res-won': match.result === 'Won',
+              'res-lost': match.result === 'Lost',
+              'res-upcoming': match.result === 'Upcoming',
+              'res-other': match.result !== 'Won' && match.result !== 'Lost' && match.result !== 'Upcoming'
+            }"
+          >
+            {{ match.result }}
+          </span>
+        </div>
+
+        <div class="match-actions">
+          <a [routerLink]="['/live-score', match._id]" class="btn-primary btn-sm">
+            <i class="fa-solid fa-tower-broadcast"></i> Score Live
+          </a>
+          <button class="btn-outline btn-sm" (click)="openEditModal(match)">
+            <i class="fa-solid fa-pen"></i> Edit
+          </button>
+          <button class="icon-btn danger" (click)="confirmDelete(match, $event)">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Schedule / Edit Match Modal -->
+<div *ngIf="showMatchModal" class="modal-backdrop">
+  <div class="modal-box match-modal-box">
+    <div class="modal-header">
+      <h4>{{ isEditMode ? 'Edit Match & Scorecard' : 'Schedule New Match' }}</h4>
+      <button class="close-btn" (click)="closeMatchModal()">&times;</button>
+    </div>
+
+    <form (ngSubmit)="saveMatch()" class="modal-form">
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label>Opponent Team <span class="text-danger">*</span></label>
+          <input type="text" [(ngModel)]="matchForm.opponent" name="opponent" placeholder="e.g. Australia" required />
+        </div>
+
+        <div class="form-row">
+          <label>Match Date <span class="text-danger">*</span></label>
+          <input type="date" [(ngModel)]="matchForm.matchDate" name="matchDate" required />
+        </div>
+      </div>
+
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label>Venue <span class="text-danger">*</span></label>
+          <input type="text" [(ngModel)]="matchForm.venue" name="venue" placeholder="e.g. MCG, Melbourne" required />
+        </div>
+
+        <div class="form-row">
+          <label>Match Format</label>
+          <select [(ngModel)]="matchForm.matchType" name="matchType">
+            <option *ngFor="let fmt of formatOptions" [value]="fmt">{{ fmt }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Match Outcome / Status</label>
+        <select [(ngModel)]="matchForm.result" name="result">
+          <option *ngFor="let res of resultOptions" [value]="res">{{ res }}</option>
+        </select>
+      </div>
+
+      <!-- Score Inputs (if played or filling score) -->
+      <div *ngIf="matchForm.result !== 'Upcoming'" class="form-grid-2 score-inputs-box">
+        <div class="form-row">
+          <label>Our Team Score</label>
+          <input type="text" [(ngModel)]="matchForm.ourScore" name="ourScore" placeholder="e.g. 189/4 (20.0)" />
+        </div>
+
+        <div class="form-row">
+          <label>Opponent Score</label>
+          <input type="text" [(ngModel)]="matchForm.theirScore" name="theirScore" placeholder="e.g. 156/8 (20.0)" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Notes / Strategy Focus</label>
+        <textarea [(ngModel)]="matchForm.notes" name="notes" rows="2" placeholder="Key tactical points or match highlights..."></textarea>
+      </div>
+
+      <div class="modal-actions mt-3">
+        <button type="button" class="btn-outline" (click)="closeMatchModal()">Cancel</button>
+        <button type="submit" class="btn-primary">
+          <i class="fa-solid fa-floppy-disk"></i> {{ isEditMode ? 'Update Match' : 'Schedule Match' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Delete Match Confirmation Modal -->
+<div *ngIf="showDeleteModal" class="modal-backdrop">
+  <div class="modal-box">
+    <i class="fa-solid fa-triangle-exclamation warn-icon"></i>
+    <h4>Delete Scheduled Match?</h4>
+    <p>Are you sure you want to remove the match vs <strong>{{ matchToDelete?.opponent }}</strong>?</p>
+    <div class="modal-actions">
+      <button class="btn-outline" (click)="closeDeleteModal()">Cancel</button>
+      <button class="btn-danger" (click)="deleteMatch()">
+        <i class="fa-solid fa-trash me-1"></i> Delete
+      </button>
+    </div>
+  </div>
+</div>

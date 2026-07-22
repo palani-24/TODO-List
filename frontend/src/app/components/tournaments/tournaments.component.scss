@@ -1,0 +1,78 @@
+.tournament-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .tournament-card-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #e9ecef;
+    }
+
+    &.active {
+      background: #e6f7ee;
+      border-color: var(--cricket-green);
+
+      h5 { color: var(--cricket-green); }
+    }
+
+    .t-format-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #e7f0ff;
+      color: #1971c2;
+    }
+
+    .t-info {
+      flex: 1;
+      margin-left: 12px;
+
+      h5 {
+        margin: 0 0 2px;
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .sub {
+        font-size: 12px;
+        color: #868e96;
+      }
+    }
+  }
+}
+
+.pt-table {
+  .qualified {
+    background: #f0fdf4;
+  }
+
+  .pos-badge {
+    font-weight: 800;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: #f1f3f5;
+    color: #495057;
+
+    &.top-pos {
+      background: #e6f7ee;
+      color: #0B6E4F;
+    }
+  }
+
+  .pts-cell {
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--cricket-green);
+  }
+}

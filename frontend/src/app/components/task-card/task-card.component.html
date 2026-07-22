@@ -1,4 +1,4 @@
-<div class="task-card" [class.is-completed]="task.status === 'Completed'">
+<div class="task-card" [class.is-completed]="task.status === 'Completed'" [class.in-progress]="task.status === 'In Progress'">
   <div class="task-card-head">
     <div class="task-icon"><i [class]="icon"></i></div>
     <div class="task-title-wrap">
@@ -10,6 +10,17 @@
 
   <div class="task-card-body">
     <p *ngIf="task.description" class="task-desc">{{ task.description }}</p>
+
+    <!-- Specific Player Assignment -->
+    <div *ngIf="assignedPlayerName" class="player-assigned-tag mt-1 mb-2">
+      <i class="fa-solid fa-user-check me-1"></i> Assigned Player: <strong>{{ assignedPlayerName }}</strong>
+    </div>
+
+    <!-- Tags -->
+    <div *ngIf="task.tags && task.tags.length > 0" class="tags-row mb-2">
+      <span *ngFor="let tag of task.tags" class="tag-pill">#{{ tag }}</span>
+    </div>
+
     <div class="task-meta">
       <span><i class="fa-solid fa-user-group"></i> {{ task.assignedTo }}</span>
       <span><i class="fa-regular fa-calendar"></i> {{ task.practiceDate | date: 'dd-MM-yyyy' }}</span>
@@ -17,8 +28,26 @@
   </div>
 
   <div class="task-card-footer">
-    <span class="badge" [ngClass]="statusClass()">{{ task.status }}</span>
+    <div class="status-dropdown-wrap">
+      <span class="badge cursor-pointer" [ngClass]="statusClass()" (click)="changeStatus(task.status === 'Completed' ? 'Pending' : (task.status === 'Pending' ? 'In Progress' : 'Completed'))">
+        {{ task.status }} <i class="fa-solid fa-rotate ms-1" style="font-size: 10px;"></i>
+      </span>
+    </div>
+
     <div class="task-actions">
+      <!-- Notes Button -->
+      <button
+        class="icon-btn position-relative"
+        [class.active-notes]="task.notes && task.notes.length > 0"
+        title="Task Notes"
+        (click)="toggleNotesModal($event)"
+      >
+        <i class="fa-regular fa-comment-dots"></i>
+        <span *ngIf="task.notes && task.notes.length > 0" class="notes-count">
+          {{ task.notes.length }}
+        </span>
+      </button>
+
       <button
         *ngIf="task.status !== 'Completed'"
         class="icon-btn success"
@@ -27,11 +56,53 @@
       >
         <i class="fa-solid fa-check"></i>
       </button>
+
       <a class="icon-btn" title="Edit" [routerLink]="['/tasks/edit', task._id]">
         <i class="fa-solid fa-pen"></i>
       </a>
+
       <button class="icon-btn danger" title="Delete" (click)="deleteTask.emit(task)">
         <i class="fa-solid fa-trash"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Task Notes Modal / Drawer -->
+<div *ngIf="showNotesModal" class="modal-backdrop" (click)="showNotesModal = false">
+  <div class="modal-box notes-modal-box" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h4><i class="fa-solid fa-comment-dots me-2"></i> Coach Notes — {{ task.taskName }}</h4>
+      <button class="close-btn" (click)="showNotesModal = false">&times;</button>
+    </div>
+
+    <div class="notes-list">
+      <div *ngIf="!task.notes || task.notes.length === 0" class="empty-state p-3">
+        <i class="fa-regular fa-comments"></i>
+        <p>No notes added yet for this task.</p>
+      </div>
+
+      <div *ngFor="let note of task.notes" class="note-item">
+        <div class="note-head">
+          <span class="author"><i class="fa-solid fa-user-tie me-1"></i> {{ note.author }}</span>
+          <div class="note-head-right">
+            <span class="time">{{ note.createdAt | date: 'short' }}</span>
+            <button *ngIf="note._id" class="btn-xs-del" (click)="deleteNote(note._id)">&times;</button>
+          </div>
+        </div>
+        <p class="text">{{ note.text }}</p>
+      </div>
+    </div>
+
+    <div class="add-note-box mt-3">
+      <input
+        type="text"
+        placeholder="Type a coaching note or instruction..."
+        [(ngModel)]="newNoteText"
+        (keyup.enter)="addNote()"
+      />
+      <button class="btn-primary btn-sm" (click)="addNote()" [disabled]="addingNote || !newNoteText.trim()">
+        Add Note
       </button>
     </div>
   </div>

@@ -1,0 +1,213 @@
+.live-pulse-badge {
+  background: #ffe8e8;
+  color: #e03131;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid #ffc9c9;
+  letter-spacing: 0.5px;
+}
+
+.cricheroes-scoreboard-card {
+  background: linear-gradient(135deg, #094f39 0%, #0B6E4F 60%, #159c72 100%);
+  color: #ffffff;
+  border-radius: 16px;
+  padding: 24px 28px;
+  box-shadow: 0 4px 20px rgba(11, 110, 79, 0.25);
+
+  .sb-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .team-block {
+      h3 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+      }
+      .score-num {
+        font-size: 20px;
+        font-weight: 700;
+        margin-top: 4px;
+        opacity: 0.95;
+      }
+    }
+
+    .sb-center {
+      text-align: center;
+
+      .vs-badge {
+        font-size: 14px;
+        font-weight: 900;
+        background: #f08c00;
+        color: #fff;
+        padding: 4px 12px;
+        border-radius: 12px;
+      }
+
+      .overs-limit-tag {
+        font-size: 12px;
+        opacity: 0.85;
+        margin-top: 6px;
+      }
+
+      .target-badge {
+        font-size: 13px;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 2px 10px;
+        border-radius: 10px;
+      }
+    }
+  }
+
+  .sb-stats-bar {
+    display: flex;
+    gap: 24px;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 13px;
+    opacity: 0.9;
+  }
+}
+
+.active-players-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+
+  .player-select-col {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #495057;
+    }
+  }
+}
+
+.scorer-keypad {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 20px;
+
+  .keypad-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #495057;
+  }
+
+  .runs-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+
+    .run-btn {
+      height: 52px;
+      border-radius: 10px;
+      border: 1px solid #dee2e6;
+      background: #ffffff;
+      font-size: 18px;
+      font-weight: 800;
+      color: #212529;
+      cursor: pointer;
+      transition: all 0.15s ease;
+
+      &:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+      &.r-4 { background: #e7f0ff; color: #1971c2; border-color: #a5d8ff; }
+      &.r-6 { background: #e6f7ee; color: #0B6E4F; border-color: #b2f2bb; }
+    }
+  }
+
+  .extras-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+
+    .extra-btn {
+      height: 44px;
+      border-radius: 8px;
+      border: 1px solid #dee2e6;
+      background: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      color: #495057;
+      cursor: pointer;
+
+      &:hover { background: #f1f3f5; }
+    }
+
+    .wicket-btn {
+      height: 44px;
+      border-radius: 8px;
+      border: none;
+      background: #e03131;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+
+      &:hover { background: #c92a2a; }
+    }
+  }
+}
+
+.commentary-panel {
+  .commentary-feed {
+    max-height: 440px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 4px;
+
+    .commentary-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      font-size: 13px;
+
+      .ball-over-num {
+        font-weight: 800;
+        color: var(--cricket-green);
+        background: #e6f7ee;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+      }
+
+      .ball-desc {
+        flex: 1;
+        color: #212529;
+      }
+
+      .ball-run-badge {
+        font-size: 12px;
+        font-weight: 800;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #e9ecef;
+        color: #343a40;
+
+        &.b-four { background: #e7f0ff; color: #1971c2; }
+        &.b-six { background: #e6f7ee; color: #0B6E4F; }
+        &.b-wicket { background: #ffe8e8; color: #e03131; }
+        &.b-extra { background: #fff4e0; color: #e8590c; }
+      }
+    }
+  }
+}

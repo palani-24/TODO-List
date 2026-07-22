@@ -16,6 +16,11 @@
 
   &.is-completed {
     opacity: 0.75;
+    background: #f8f9fa;
+  }
+
+  &.in-progress {
+    border-left: 4px solid #1971c2;
   }
 }
 
@@ -55,6 +60,30 @@
   margin: 0;
 }
 
+.player-assigned-tag {
+  font-size: 12px;
+  background: #e7f0ff;
+  color: #1971c2;
+  padding: 3px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+
+  .tag-pill {
+    font-size: 11px;
+    font-weight: 600;
+    color: #495057;
+    background: #f1f3f5;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+}
+
 .task-meta {
   display: flex;
   gap: 16px;
@@ -74,9 +103,109 @@
   justify-content: space-between;
   border-top: 1px solid #f1f3f5;
   padding-top: 12px;
+
+  .badge-progress {
+    background: #e7f0ff;
+    color: #1971c2;
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
+    user-select: none;
+  }
 }
 
 .task-actions {
   display: flex;
   gap: 8px;
+
+  .active-notes {
+    color: #1971c2;
+    border-color: #1971c2;
+    background: #e7f0ff;
+  }
+
+  .notes-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #1971c2;
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: 800;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.notes-modal-box {
+  max-width: 480px;
+  text-align: left;
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    h4 { margin: 0; font-size: 16px; font-weight: 700; }
+    .close-btn {
+      background: none; border: none; font-size: 22px; color: #adb5bd; cursor: pointer;
+      &:hover { color: #212529; }
+    }
+  }
+
+  .notes-list {
+    max-height: 260px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .note-item {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 10px 12px;
+
+      .note-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 4px;
+        font-size: 11px;
+
+        .author { font-weight: 700; color: #0B6E4F; }
+        .time { color: #868e96; }
+
+        .btn-xs-del {
+          background: none;
+          border: none;
+          color: #e03131;
+          font-size: 14px;
+          cursor: pointer;
+          margin-left: 6px;
+        }
+      }
+
+      .text {
+        margin: 0;
+        font-size: 13px;
+        color: #212529;
+      }
+    }
+  }
+
+  .add-note-box {
+    display: flex;
+    gap: 8px;
+
+    input {
+      flex: 1;
+    }
+  }
 }

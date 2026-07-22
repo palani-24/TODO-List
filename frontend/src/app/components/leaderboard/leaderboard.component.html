@@ -1,0 +1,134 @@
+<div class="page-content">
+  <!-- Page Header Banner -->
+  <div class="leaderboard-hero-banner mb-4">
+    <div class="banner-badge">
+      <i class="fa-solid fa-trophy me-1"></i> CRICHEROES STATS & LEADERBOARDS
+    </div>
+    <h2>Player Stats & Award Cap Standings</h2>
+    <p>Track top performers, Orange Cap (Most Runs), Purple Cap (Most Wickets), and Boundary Kings</p>
+  </div>
+
+  <div class="panel">
+    <!-- Filter Tabs -->
+    <div class="lb-tabs mb-4">
+      <button [class.active]="activeTab === 'orange'" (click)="setTab('orange')">
+        <i class="fa-solid fa-hard-hat text-warning me-1"></i> Orange Cap (Top Runs)
+      </button>
+      <button [class.active]="activeTab === 'purple'" (click)="setTab('purple')">
+        <i class="fa-solid fa-hard-hat text-purple me-1"></i> Purple Cap (Top Wickets)
+      </button>
+      <button [class.active]="activeTab === 'sixes'" (click)="setTab('sixes')">
+        <i class="fa-solid fa-bolt text-danger me-1"></i> Boundary Kings (Sixes & Fours)
+      </button>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="spinner-wrap">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Orange Cap Tab View -->
+    <div *ngIf="!loading && activeTab === 'orange'" class="tab-content">
+      <div *ngIf="!leaderboardData?.orangeCap || leaderboardData?.orangeCap?.length === 0" class="empty-state">
+        <i class="fa-solid fa-trophy"></i>
+        <p>No batting stats recorded yet. Play live matches to update standings!</p>
+      </div>
+
+      <div *ngIf="leaderboardData?.orangeCap && leaderboardData!.orangeCap.length > 0" class="table-responsive">
+        <table class="task-table lb-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>Role</th>
+              <th>Innings</th>
+              <th>Runs</th>
+              <th>Highest</th>
+              <th>Average</th>
+              <th>Strike Rate</th>
+              <th>50s / 100s</th>
+              <th>4s / 6s</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of leaderboardData?.orangeCap; let idx = index" [class.top-performer]="idx === 0">
+              <td>
+                <span class="rank-badge" [ngClass]="'rank-' + (idx + 1)">#{{ idx + 1 }}</span>
+              </td>
+              <td>
+                <div class="player-name-cell">
+                  <strong>{{ p.name }}</strong>
+                  <span class="j-num">#{{ p.jerseyNumber }}</span>
+                </div>
+              </td>
+              <td><span class="pill">{{ p.role }}</span></td>
+              <td>{{ p.innings }}</td>
+              <td class="fw-extrabold text-success">{{ p.runs }}</td>
+              <td>{{ p.highestScore }}</td>
+              <td>{{ p.average }}</td>
+              <td>{{ p.strikeRate }}</td>
+              <td>{{ p.fifties }} / {{ p.hundreds }}</td>
+              <td>{{ p.fours }} / {{ p.sixes }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Purple Cap Tab View -->
+    <div *ngIf="!loading && activeTab === 'purple'" class="tab-content">
+      <div *ngIf="!leaderboardData?.purpleCap || leaderboardData?.purpleCap?.length === 0" class="empty-state">
+        <i class="fa-solid fa-trophy"></i>
+        <p>No bowling stats recorded yet.</p>
+      </div>
+
+      <div *ngIf="leaderboardData?.purpleCap && leaderboardData!.purpleCap.length > 0" class="table-responsive">
+        <table class="task-table lb-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>Role</th>
+              <th>Overs</th>
+              <th>Wickets</th>
+              <th>Runs Conceded</th>
+              <th>Economy Rate</th>
+              <th>Best Bowling</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of leaderboardData?.purpleCap; let idx = index" [class.top-performer]="idx === 0">
+              <td>
+                <span class="rank-badge purple-rank" [ngClass]="'rank-' + (idx + 1)">#{{ idx + 1 }}</span>
+              </td>
+              <td>
+                <div class="player-name-cell">
+                  <strong>{{ p.name }}</strong>
+                  <span class="j-num">#{{ p.jerseyNumber }}</span>
+                </div>
+              </td>
+              <td><span class="pill">{{ p.role }}</span></td>
+              <td>{{ p.overs }}</td>
+              <td class="fw-extrabold text-danger">{{ p.wickets }}</td>
+              <td>{{ p.runsConceded }}</td>
+              <td>{{ p.economy }}</td>
+              <td>{{ p.bestBowling }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Sixes Kings Tab View -->
+    <div *ngIf="!loading && activeTab === 'sixes'" class="tab-content">
+      <div class="boundary-kings-grid">
+        <div *ngFor="let p of leaderboardData?.sixesKings; let idx = index" class="king-card">
+          <div class="king-crown"><i class="fa-solid fa-crown text-warning"></i> #{{ idx + 1 }}</div>
+          <h4>{{ p.name }}</h4>
+          <div class="stat-big">{{ p.sixes }} SIXES</div>
+          <div class="stat-sub">{{ p.fours }} Fours &bull; {{ p.runs }} Total Runs</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

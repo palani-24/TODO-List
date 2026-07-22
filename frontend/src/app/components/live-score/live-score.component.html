@@ -1,0 +1,239 @@
+<div class="page-content">
+  <div *ngIf="loading" class="spinner-wrap">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!loading && match">
+    <!-- Header Back & Title -->
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <a routerLink="/matches" class="btn-outline"><i class="fa-solid fa-arrow-left"></i> Match Fixtures</a>
+      <span class="live-pulse-badge">🔴 CRICHEROES LIVE SCORER CONSOLE</span>
+      <button *ngIf="match.status === 'Live'" class="btn-danger btn-sm" (click)="openCompleteMatchModal()">
+        <i class="fa-solid fa-flag-checkered"></i> Conclude Match
+      </button>
+    </div>
+
+    <!-- CricHeroes Digital Match Scoreboard Card -->
+    <div class="cricheroes-scoreboard-card">
+      <div class="sb-header">
+        <div class="team-block">
+          <h3>{{ match.teamA }}</h3>
+          <div class="score-num">{{ match.ourScore || '0/0 (0.0 ov)' }}</div>
+        </div>
+
+        <div class="sb-center">
+          <span class="vs-badge">VS</span>
+          <div class="overs-limit-tag">{{ match.matchType }} &bull; {{ match.oversLimit }} Overs</div>
+          <div *ngIf="match.currentInningsNum === 2" class="target-badge mt-1">
+            TARGET: <strong>{{ match.target }}</strong> runs
+          </div>
+        </div>
+
+        <div class="team-block text-end">
+          <h3>{{ match.teamB }}</h3>
+          <div class="score-num">{{ match.theirScore || 'Yet to Bat' }}</div>
+        </div>
+      </div>
+
+      <div class="sb-stats-bar">
+        <div>CRR: <strong>{{ currentRunRate }}</strong></div>
+        <div *ngIf="match.currentInningsNum === 2">RRR: <strong>{{ requiredRunRate }}</strong></div>
+        <div>Venue: <strong>{{ match.venue }}</strong></div>
+        <div *ngIf="match.tossWinner">Toss: <strong>{{ match.tossWinner }} ({{ match.tossDecision }})</strong></div>
+      </div>
+    </div>
+
+    <!-- Main Scorer Interface -->
+    <div class="row mt-4">
+      <!-- Left Column: Scorer Keypad & Active Players -->
+      <div class="col-lg-7">
+        <div class="panel">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-gamepad me-2"></i> Ball-by-Ball Live Scoring Console</h3>
+            <button class="btn-outline btn-sm" (click)="swapStrike()">
+              <i class="fa-solid fa-right-left"></i> Swap Strike
+            </button>
+          </div>
+
+          <!-- Active Players Selector Row -->
+          <div class="active-players-box mb-4">
+            <div class="player-select-col">
+              <label><i class="fa-solid fa-baseball-bat-ball text-primary me-1"></i> Striker (On Strike)</label>
+              <input type="text" [(ngModel)]="striker" placeholder="Enter Striker Name" list="playerList" />
+            </div>
+
+            <div class="player-select-col">
+              <label><i class="fa-solid fa-user me-1"></i> Non-Striker</label>
+              <input type="text" [(ngModel)]="nonStriker" placeholder="Enter Non-Striker Name" list="playerList" />
+            </div>
+
+            <div class="player-select-col">
+              <label><i class="fa-solid fa-bowling-ball text-danger me-1"></i> Bowler</label>
+              <input type="text" [(ngModel)]="bowler" placeholder="Enter Bowler Name" list="playerList" />
+            </div>
+
+            <datalist id="playerList">
+              <option *ngFor="let p of players" [value]="p.name">{{ p.name }} (#{{ p.jerseyNumber }} - {{ p.role }})</option>
+            </datalist>
+          </div>
+
+          <!-- CricHeroes Scoring Keypad -->
+          <div class="scorer-keypad">
+            <label class="keypad-label mb-2">Select Ball Outcome:</label>
+
+            <div class="runs-grid">
+              <button class="run-btn r-0" (click)="recordBall(0)">0</button>
+              <button class="run-btn r-1" (click)="recordBall(1)">1</button>
+              <button class="run-btn r-2" (click)="recordBall(2)">2</button>
+              <button class="run-btn r-3" (click)="recordBall(3)">3</button>
+              <button class="run-btn r-4" (click)="recordBall(4)">4 (FOUR)</button>
+              <button class="run-btn r-6" (click)="recordBall(6)">6 (SIX)</button>
+            </div>
+
+            <div class="extras-grid mt-3">
+              <button class="extra-btn" (click)="recordBall(0, 'Wide')">+WD (Wide)</button>
+              <button class="extra-btn" (click)="recordBall(0, 'No Ball')">+NB (No Ball)</button>
+              <button class="extra-btn" (click)="recordBall(1, 'Bye')">1 Bye</button>
+              <button class="extra-btn" (click)="recordBall(1, 'Leg Bye')">1 Leg Bye</button>
+              <button class="wicket-btn" (click)="openWicketModal()"><i class="fa-solid fa-skull"></i> WICKET</button>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+              <button *ngIf="match.currentInningsNum === 1" class="btn-outline" (click)="endFirstInnings()">
+                <i class="fa-solid fa-forward me-1"></i> End 1st Innings
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Ball-by-Ball Commentary Feed -->
+      <div class="col-lg-5">
+        <div class="panel commentary-panel">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-list-ol me-2"></i> Live Ball Commentary</h3>
+            <span class="badge badge-low">Innings {{ match.currentInningsNum }}</span>
+          </div>
+
+          <div class="commentary-feed">
+            <div *ngIf="!getCurrentInnings()?.ballByBall || getCurrentInnings()?.ballByBall?.length === 0" class="empty-state p-4">
+              <i class="fa-solid fa-microphone-slash"></i>
+              <p>No balls bowled in this innings yet.</p>
+            </div>
+
+            <div *ngFor="let ball of (getCurrentInnings()?.ballByBall || []).slice().reverse()" class="commentary-item">
+              <div class="ball-over-num">{{ ball.overNum }}.{{ ball.ballNum }}</div>
+              <div class="ball-desc">
+                <strong>{{ ball.striker }}</strong> to <strong>{{ ball.bowler }}</strong>: {{ ball.commentary }}
+              </div>
+              <span
+                class="ball-run-badge"
+                [ngClass]="{
+                  'b-six': ball.runs === 6,
+                  'b-four': ball.runs === 4,
+                  'b-wicket': ball.isWicket,
+                  'b-extra': ball.isExtra
+                }"
+              >
+                {{ ball.isWicket ? 'W' : (ball.isExtra ? ball.extraType : ball.runs) }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toss Selection Modal -->
+<div *ngIf="showTossModal" class="modal-backdrop">
+  <div class="modal-box">
+    <h4><i class="fa-solid fa-coins text-warning me-2"></i> Match Toss & Start</h4>
+    <p>Record toss details before starting live scoring.</p>
+
+    <div class="form-row text-start mt-3">
+      <label>Toss Winner</label>
+      <select [(ngModel)]="tossWinner">
+        <option [value]="match?.teamA">{{ match?.teamA }}</option>
+        <option [value]="match?.teamB">{{ match?.teamB }}</option>
+      </select>
+    </div>
+
+    <div class="form-row text-start mt-3">
+      <label>Elected to</label>
+      <select [(ngModel)]="tossDecision">
+        <option value="Batting">Batting</option>
+        <option value="Bowling">Bowling</option>
+      </select>
+    </div>
+
+    <div class="modal-actions mt-4">
+      <button class="btn-primary" (click)="startLiveToss()">Start Live Match</button>
+    </div>
+  </div>
+</div>
+
+<!-- Wicket Dismissal Modal -->
+<div *ngIf="showWicketModal" class="modal-backdrop">
+  <div class="modal-box text-start">
+    <div class="modal-header">
+      <h4><i class="fa-solid fa-skull text-danger me-2"></i> Record Wicket Dismissal</h4>
+      <button class="close-btn" (click)="showWicketModal = false">&times;</button>
+    </div>
+
+    <div class="form-row mt-3">
+      <label>Dismissal Type</label>
+      <select [(ngModel)]="wicketType">
+        <option value="Bowled">Bowled</option>
+        <option value="Caught">Caught</option>
+        <option value="LBW">LBW</option>
+        <option value="Run Out">Run Out</option>
+        <option value="Stumped">Stumped</option>
+        <option value="Hit Wicket">Hit Wicket</option>
+      </select>
+    </div>
+
+    <div class="form-row mt-3">
+      <label>Dismissed Player</label>
+      <input type="text" [(ngModel)]="dismissedPlayer" />
+    </div>
+
+    <div *ngIf="wicketType === 'Caught' || wicketType === 'Run Out' || wicketType === 'Stumped'" class="form-row mt-3">
+      <label>Fielder Name (Optional)</label>
+      <input type="text" [(ngModel)]="fielder" placeholder="e.g. Ravindra Jadeja" />
+    </div>
+
+    <div class="modal-actions mt-4">
+      <button class="btn-outline" (click)="showWicketModal = false">Cancel</button>
+      <button class="btn-danger" (click)="confirmWicketSubmission()">Submit Wicket</button>
+    </div>
+  </div>
+</div>
+
+<!-- Conclude Match Modal -->
+<div *ngIf="showCompleteModal" class="modal-backdrop">
+  <div class="modal-box text-start">
+    <div class="modal-header">
+      <h4><i class="fa-solid fa-trophy text-warning me-2"></i> Conclude Match & Sync Stats</h4>
+      <button class="close-btn" (click)="showCompleteModal = false">&times;</button>
+    </div>
+
+    <div class="form-row mt-3">
+      <label>Win Margin / Result Summary</label>
+      <input type="text" [(ngModel)]="customWinMargin" placeholder="e.g. India won by 33 runs" />
+    </div>
+
+    <div class="form-row mt-3">
+      <label>Man of the Match</label>
+      <select [(ngModel)]="manOfTheMatch">
+        <option value="">Select Player</option>
+        <option *ngFor="let p of players" [value]="p.name">{{ p.name }} (#{{ p.jerseyNumber }})</option>
+      </select>
+    </div>
+
+    <div class="modal-actions mt-4">
+      <button class="btn-outline" (click)="showCompleteModal = false">Cancel</button>
+      <button class="btn-primary" (click)="completeMatch()">Conclude & Update Stats</button>
+    </div>
+  </div>
+</div>
